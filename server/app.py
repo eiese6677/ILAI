@@ -1,12 +1,13 @@
 from flask import Flask, request
 from flask_socketio import SocketIO, emit, join_room
+from core.game import *
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'dev'
 socketio = SocketIO(app, cors_allowed_origins="*")
 
 # --- Game Management ---
-games = {}
+games = {0:None}
 player_game_map = {}
 
 def get_game_for_player(sid):
@@ -22,7 +23,7 @@ def get_game_for_player(sid):
 def on_connect():
     sid = request.sid
     print(f"connect {sid}")
-    game = Game()
+    game = Game(games.keys[-1]+1)
     games[game.id] = game
     player_game_map[sid] = game.id
     join_room(game.id)
@@ -50,10 +51,6 @@ def on_disconnect():
     game_id = player_game_map.pop(sid, None)
     if game_id:
         game = games.get(game_id)
-        # Optional: Implement logic to handle player disconnection, 
-        # e.g., pause game, notify other player, or clean up game if empty.
-        # For now, we'll just remove the player from the map.
-        pass
 
 # basic http endpoint
 @app.route('/ping')

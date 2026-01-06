@@ -14,7 +14,7 @@ interface Stone {
 }
 
 export default function App() {
-  const BOARD_SIZE = 15;
+  const BOARD_SIZE = 3;
   const [players, setPlayers] = useState<PlayerData>({});
   const [members, setMembers] = useState<string[]>([]);
   const [myId, setMyId] = useState<string | null>(null);
@@ -91,6 +91,9 @@ export default function App() {
     if (s && s.connected && joined) s.emit('place_stone', { r, c });
   }, [joined]);
 
+  const myIdx = members.indexOf(myId || '');
+  const myColor = myIdx >= 0 ? (myIdx === 0 ? 'black' : 'white') : null;
+
   return (
     <div className="app-root">
       <h1>오목</h1>
@@ -110,7 +113,7 @@ export default function App() {
         <span style={{ marginLeft: 8 }}>{joined ? `Joined: ${roomPassword}` : 'Not joined'}</span>
       </div>
 
-      <Board size={BOARD_SIZE} players={players} myId={myId} members={members} board={board} onPlace={placeAt} />
+      <Board size={BOARD_SIZE} players={players} myId={myId} members={members} board={board} onPlace={placeAt} myColor={myIdx === 0 ? 'black' : 'white'} />
 
       <div className="controls">
         <button

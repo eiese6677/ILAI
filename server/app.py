@@ -1,6 +1,6 @@
 from flask import Flask, request
 from flask_socketio import SocketIO, emit, join_room
-from core.game import *
+from server.core.game import *
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'dev'
